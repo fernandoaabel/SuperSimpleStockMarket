@@ -31,3 +31,4 @@ Provide working source code that will:
 > All number values in pennies
 
 #### Table 2. Formula
+![Formula table](./images/formulas.png)
