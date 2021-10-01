@@ -15,7 +15,7 @@ namespace SuperSimpleStockMarket.Models
         public override float DividendYield(float price)
         {
             if (price > 0)
-                return (FixedDividend * ParValue / 100) / price;
+                return (FixedDividend * ParValue) / price;
             return 0;
         }
     }

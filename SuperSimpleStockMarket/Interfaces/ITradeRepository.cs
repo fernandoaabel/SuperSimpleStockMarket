@@ -12,6 +12,14 @@ namespace SuperSimpleStockMarket.Interfaces
         List<Trade> GetAll();
 
         /// <summary>
+        /// Get most recent trades of a specific Stock within {intervalInMinutes} minutes
+        /// </summary>
+        /// <param name="stock"><see cref="Stock"/></param>
+        /// <param name="intervalInMinutes">Interval in Minutes</param>
+        /// <returns>List of <see cref="Trade"/></returns>
+        List<Trade> GetRecentTradesPerStock(Stock stock, int intervalInMinutes);
+
+        /// <summary>
         /// Get all existing Trade transactions for a specific Stock
         /// </summary>
         /// <param name="stockSymbol"><see cref="Stock"/>.Symbol</param>
@@ -47,6 +55,6 @@ namespace SuperSimpleStockMarket.Interfaces
         /// Get GBCE All Share Index using the geometric mean of prices for all stocks
         /// </summary>
         /// <returns>GBCE All Share Index value</returns>
-        float GetGBCEAllShareIndex();
+        double GetGBCEAllShareIndex();
     }
 }

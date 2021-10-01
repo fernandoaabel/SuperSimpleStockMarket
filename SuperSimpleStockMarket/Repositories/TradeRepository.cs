@@ -46,7 +46,25 @@ namespace SuperSimpleStockMarket.Repositories
         {
             return _trades;
         }
-        
+
+        /// <summary>
+        /// Get most recent trades within {intervalInMinutes} minutes
+        /// </summary>
+        /// <param name="stock"><see cref="Stock"/></param>
+        /// <param name="intervalInMinutes">Interval in Minutes</param>
+        /// <returns>List of <see cref="Trade"/></returns>
+        public List<Trade> GetRecentTradesPerStock(Stock stock, int intervalInMinutes)
+        {
+            if (stock is null || intervalInMinutes == 0)
+            {
+                return new List<Trade>();
+            }
+
+            return _trades
+                .Where(x => x.StockSymbol.Equals(stock.Symbol) &&
+                x.Timestamp >= DateTime.Now.AddMinutes(-intervalInMinutes)).ToList();
+        }
+
         /// <summary>
         /// Get all existing Trade transactions for a specific Stock
         /// </summary>
@@ -106,9 +124,9 @@ namespace SuperSimpleStockMarket.Repositories
         /// <returns>Volume Weighted Stock Price value</returns>
         public float GetVolumeWeightedStockPrice(Stock stock)
         {
-            const int intervalInMinutes = -15;
+            const int intervalInMinutes = 15;
 
-            var latestTrades = _trades.Where(x => x.StockSymbol.Equals(stock.Symbol) && x.Timestamp >= DateTime.Now.AddMinutes(intervalInMinutes));
+            var latestTrades = GetRecentTradesPerStock(stock, intervalInMinutes);
 
             if (!latestTrades.Any())
             {
@@ -126,21 +144,21 @@ namespace SuperSimpleStockMarket.Repositories
         /// Get GBCE All Share Index using the geometric mean of prices for all stocks
         /// </summary>
         /// <returns>GBCE All Share Index value</returns>
-        public float GetGBCEAllShareIndex()
+        public double GetGBCEAllShareIndex()
         {
-            if (_trades.Any())
+            if (!_trades.Any())
             {
                 return 0;
             }
 
-            float geometricMean = 1;
+            double geometricMean = 1;
 
             foreach (var trade in _trades.Where(x => x.Price > 0))
             {
                 geometricMean *= trade.Price;
             }
 
-            var gbceIndex = (float)Math.Pow(geometricMean, 1 / _trades.Count);
+            var gbceIndex = Math.Pow(geometricMean, (float) 1 / _trades.Count);
 
             return gbceIndex;
         }
